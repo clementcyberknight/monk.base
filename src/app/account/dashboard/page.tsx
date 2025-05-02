@@ -1,4 +1,9 @@
+"use client";
+import React from "react";
+import { useRouter } from "next/navigation";
+
 export default function Dashboard() {
+  const router = useRouter();
   return (
     <div className="flex flex-col min-h-screen max-w-md mx-auto bg-[#F7F0D9] overflow-y-auto">
       {/* Header Section */}
@@ -32,13 +37,19 @@ export default function Dashboard() {
 
         {/* Action Buttons */}
         <div className="flex gap-4 mx-6 mb-2">
-          <button className="flex-1 bg-[#2C2C2B] text-white rounded-full py-3 px-6 flex items-center justify-start gap-2">
+          <button
+            className="flex-1 bg-[#2C2C2B] text-white rounded-full py-3 px-6 flex items-center justify-start gap-2"
+            onClick={() => router.push("/account/send-asset")}
+          >
             <div className="bg-[#1E1E1E] rounded-full -ml-2 p-3">
               <img src="/icons/ArrowBendRightUp.svg" alt="" />
             </div>
             <span>Send</span>
           </button>
-          <button className="flex-1 bg-[#2C2C2B] text-white rounded-full py-3 px-6 flex items-center justify-start gap-2">
+          <button
+            className="flex-1 bg-[#2C2C2B] text-white rounded-full py-3 px-6 flex items-center justify-start gap-2"
+            onClick={() => router.push("/account/recieve-asset")}
+          >
             <div className="bg-[#1E1E1E] rounded-full -ml-2 p-3">
               <img src="/icons/ArrowBendLeftDown.svg" alt="" />
             </div>

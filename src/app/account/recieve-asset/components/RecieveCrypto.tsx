@@ -20,11 +20,10 @@ export default function RecieveCryptoStep({
   onShowQrCode,
   onCopyAddress,
 }: RecieveCryptoStepProps) {
-  const maskAddress = (address: string, startChars = 15, endChars = 3) => {
-    // Adjusted numbers to match image: 15...3
+  const maskAddress = (address: string, startChars = 6, endChars = 6) => {
     if (!address) return "";
     if (address.length <= startChars + endChars) return address;
-    return `${address.substring(0, startChars)}....${address.substring(
+    return `${address.substring(0, startChars)}...${address.substring(
       address.length - endChars
     )}`;
   };
@@ -79,17 +78,14 @@ export default function RecieveCryptoStep({
         {/* Account Number Info */}
         <div className="w-full mb-8">
           {" "}
-          {/* Adjusted margin-bottom */}
           <label className="block text-sm font-medium mb-2 text-[#F7F0D9]">
             Account Number
           </label>{" "}
-          {/* Ensure text color */}
           <div className="w-full bg-[#2C2C2B] rounded-xl p-4 flex items-center gap-3">
             <div className="w-6 h-6 flex items-center justify-center text-[#FFBB03]">
               {" "}
-              {/* Adjust size and color for wallet icon */}
               <Image
-                src="/icons/wallet.svg"
+                src="/icons/Wallet.svg"
                 alt="Wallet icon"
                 width={24}
                 height={24}
@@ -112,7 +108,7 @@ export default function RecieveCryptoStep({
             <div className="w-6 h-6 text-[#F7F0D9]">
               {" "}
               <Image
-                src="/icons/qr-code.svg"
+                src="/icons/QrCode.svg"
                 alt="QR Code icon"
                 width={24}
                 height={24}
@@ -127,7 +123,7 @@ export default function RecieveCryptoStep({
             <div className="w-6 h-6 text-[#1E1E1E]">
               {" "}
               <Image
-                src="/icons/copy.svg"
+                src="/icons/CopySimple.svg"
                 alt="Copy icon"
                 width={24}
                 height={24}

@@ -1,4 +1,3 @@
-// src/app/recieve-asset/components/RecieveFiatStep.tsx
 "use client";
 
 import Image from "next/image";
@@ -8,17 +7,17 @@ interface RecieveFiatStepProps {
   accountName: string;
   bankName: string;
   accountNumber: string;
-  currencyName: string; // e.g., "Naira Account"
+  currencyName: string;
   onShowQrCode: (details: {
     accountName: string;
     bankName: string;
     accountNumber: string;
-  }) => void; // Callback for showing QR
+  }) => void;
   onCopyDetails: (details: {
     accountName: string;
     bankName: string;
     accountNumber: string;
-  }) => void; // Callback for copying details
+  }) => void;
 }
 
 export default function RecieveFiatStep({
@@ -29,41 +28,28 @@ export default function RecieveFiatStep({
   onShowQrCode,
   onCopyDetails,
 }: RecieveFiatStepProps) {
-  // Prepare details object for callbacks
   const accountDetails = { accountName, bankName, accountNumber };
 
   return (
     <div className="flex h-screen flex-col items-center bg-[#1E1E1E] text-[#F7F0D9] p-4">
       {" "}
-      {/* Added padding */}
       <div className="flex flex-col w-full max-w-md flex-grow overflow-y-auto">
-        {/* Header - Account Details Title */}
-        <div className="w-full mb-8">
-          <h1 className="text-2xl font-bold text-left text-[#F7F0D9]">
-            Account Details
-          </h1>
-        </div>
-
-        {/* Currency Account Title */}
         <div className="w-full mb-6">
           {" "}
-          {/* Adjusted margin-bottom */}
           <h2 className="text-xl font-semibold text-left text-[#F7F0D9]">
             {currencyName}
           </h2>
         </div>
 
-        {/* Account Name Info */}
         <div className="w-full mb-4">
           {" "}
-          {/* Adjusted margin-bottom */}
           <label className="block text-sm font-medium mb-2 text-[#F7F0D9]">
             Account Name
           </label>
           <div className="w-full bg-[#2C2C2B] rounded-xl p-4 flex items-center gap-3">
             <div className="w-6 h-6 flex items-center justify-center text-[#FFBB03]">
               <Image
-                src="/icons/person.svg"
+                src="/icons/UserCircle.svg"
                 alt="Person icon"
                 width={24}
                 height={24}
@@ -75,17 +61,15 @@ export default function RecieveFiatStep({
           </div>
         </div>
 
-        {/* Bank Name Info */}
         <div className="w-full mb-4">
           {" "}
-          {/* Adjusted margin-bottom */}
           <label className="block text-sm font-medium mb-2 text-[#F7F0D9]">
             Bank Name
           </label>
           <div className="w-full bg-[#2C2C2B] rounded-xl p-4 flex items-center gap-3">
             <div className="w-6 h-6 flex items-center justify-center text-[#FFBB03]">
               <Image
-                src="/icons/bank.svg"
+                src="/icons/WellBank.svg"
                 alt="Bank icon"
                 width={24}
                 height={24}
@@ -112,7 +96,6 @@ export default function RecieveFiatStep({
                 width={24}
                 height={24}
               />{" "}
-              {/* Using hash.svg placeholder */}
             </div>
             <span className="font-semibold text-lg text-[#F7F0D9]">
               {accountNumber}
@@ -131,7 +114,7 @@ export default function RecieveFiatStep({
             QR Code
             <div className="w-6 h-6 text-[#F7F0D9]">
               <Image
-                src="/icons/qr-code.svg"
+                src="/icons/QrCode.svg"
                 alt="QR Code icon"
                 width={24}
                 height={24}
@@ -145,7 +128,7 @@ export default function RecieveFiatStep({
             Copy Details
             <div className="w-6 h-6 text-[#1E1E1E]">
               <Image
-                src="/icons/copy.svg"
+                src="/icons/CopySimple.svg"
                 alt="Copy icon"
                 width={24}
                 height={24}
