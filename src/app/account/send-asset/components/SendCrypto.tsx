@@ -1,104 +1,169 @@
 "use client";
 
 import Image from "next/image";
-import React from "react";
+import React, { useState } from "react";
+import TransactionPasscodeModal from "@/app/account/send-asset/modal/PassCode";
 
-interface RecieveFiatStepProps {
-  accountName: string;
-  bankName: string;
-  accountNumber: string;
-  currencyName: string;
-  onShowQrCode: (details: {
-    accountName: string;
-    bankName: string;
-    accountNumber: string;
-  }) => void;
-  onCopyDetails: (details: {
-    accountName: string;
-    bankName: string;
-    accountNumber: string;
+interface SendCryptoStepProps {
+  onConfirm: (details: {
+    contactAddress: string;
+    token: string;
+    amount: string;
+    tokenSymbol?: string;
   }) => void;
 }
 
-export default function SendCryptoStep({
-  accountName,
-  bankName,
-  accountNumber,
-  currencyName,
-  onShowQrCode,
-  onCopyDetails,
-}: RecieveFiatStepProps) {
-  const accountDetails = { accountName, bankName, accountNumber };
+export default function SendCryptoStep({ onConfirm }: SendCryptoStepProps) {
+  const [showPasscodeModal, setShowPasscodeModal] = useState(false);
+  const [contactAddress, setContactAddress] = useState("");
+  const [token, setToken] = useState("USDC");
+  const [amount, setAmount] = useState("");
+  const [tokenSymbol, setTokenSymbol] = useState("$");
+  const [isLoading, setIsLoading] = useState(false);
+  const [isSuccess, setIsSuccess] = useState(false);
+
+  const handleConfirmClick = () => {
+    if (!contactAddress || !token || !amount) {
+      alert("Please fill all fields.");
+      return;
+    }
+    onConfirm({
+      contactAddress,
+      token,
+      amount,
+      tokenSymbol,
+    });
+    setShowPasscodeModal(true);
+  };
+
+  const handleVerifyPasscode = (passcode: string) => {
+    // Show loading indicator
+    setIsLoading(true);
+    setShowPasscodeModal(false);
+
+    // Simulate API call to verify passcode and process transaction
+    setTimeout(() => {
+      setIsLoading(false);
+      setIsSuccess(true);
+
+      // Reset success message after a few seconds
+      setTimeout(() => {
+        setIsSuccess(false);
+      }, 3000);
+
+      console.log("Transaction completed with passcode:", passcode);
+    }, 1500);
+  };
 
   return (
-    <div className="flex h-screen flex-col items-center bg-[#1E1E1E] text-[#F7F0D9] p-6">
-      <div className="flex flex-col w-full max-w-md flex-grow">
-        {/* Currency Name */}
-        <div className="w-full mb-6">
-          <h2 className="text-xl font-semibold text-left text-[#F7F0D9]">
-            {currencyName}
-          </h2>
-        </div>
-
-        {/* Account Name */}
-        <div className="w-full mb-4">
-          <label className="block text-sm font-medium mb-2 text-[#F7F0D9]">
-            Contact Address
-          </label>
-          <div className="w-full bg-[#2C2C2B] rounded-lg p-4 flex items-center gap-3">
-            <span className="text-[#F7F0D9] text-base flex-grow truncate">
-              {accountName}
-            </span>
-            <div className="w-8 h-8 flex items-center justify-center bg-[#FFBB03] rounded-full">
-              <Image
-                src="/icons/UserCircle.svg"
-                alt="Person icon"
-                width={20}
-                height={20}
-              />
-            </div>
+    <div className="flex flex-col w-full max-w-md flex-grow text-[#F7F0D9] bg-[#1E1E1E]">
+      {/* Contact Address Section */}
+      <div className="w-full px-2 mb-6">
+        <label className="block text-sm mt-8 font-medium mb-2 text-[#F7F0D9]">
+          Wallet Address
+        </label>
+        <div className="flex items-center gap-3">
+          <div className="w-full bg-[#2C2C2B] rounded-2xl p-4">
+            <input
+              type="text"
+              value={contactAddress}
+              onChange={(e) => setContactAddress(e.target.value)}
+              className="bg-transparent tracking-wide text-lg font-semibold text-[#F7F0D9] outline-none w-full"
+              placeholder="7hdgyG64dFGO.....12d"
+            />
           </div>
-        </div>
-
-        {/* Token */}
-        <div className="w-full mb-4">
-          <label className="block text-sm font-medium mb-2 text-[#F7F0D9]">
-            Token
-          </label>
-          <div className="w-full bg-[#2C2C2B] rounded-lg p-4 flex items-center gap-3">
+          <button className="w-14 h-14 flex items-center justify-center rounded-xl bg-[#FFBB03] shrink-0">
             <Image
-              src="/icons/USDC.svg"
-              alt="Token icon"
+              src="/icons/blackUserCircle.svg"
+              alt="Account icon"
               width={24}
               height={24}
             />
-            <span className="text-[#F7F0D9] text-base">USDC</span>
-          </div>
+          </button>
         </div>
+      </div>
 
-        {/* Amount */}
-        <div className="w-full mb-6">
-          <label className="block text-sm font-medium mb-2 text-[#F7F0D9]">
-            Amount
-          </label>
-          <div className="w-full bg-[#2C2C2B] rounded-lg p-4 flex items-center gap-3">
-            <span className="text-[#FFBB03] text-lg font-semibold">₦</span>
-            <input
-              type="text"
-              placeholder="Enter amount"
-              className="bg-transparent text-[#F7F0D9] text-base flex-grow outline-none"
+      {/* Token Selection */}
+      <div className="w-full px-2 mb-6">
+        <label className="block text-sm font-medium mb-2 text-[#F7F0D9]">
+          Token
+        </label>
+        <button className="w-full bg-[#2C2C2B] rounded-xl p-4 flex items-center justify-between gap-3 text-left hover:bg-[#3a3a3a]">
+          <div className="flex items-center gap-3">
+            <div className="w-6 h-6 flex items-center justify-center">
+              <Image
+                src="/icons/usdc.svg"
+                alt="Token icon"
+                width={24}
+                height={24}
+              />
+            </div>
+            <span className="font-semibold text-lg text-[#F7F0D9]">
+              {token}
+            </span>
+          </div>
+          {/* Dropdown indicator */}
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            strokeWidth={2}
+            stroke="currentColor"
+            className="w-5 h-5 text-[#777]"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="m19.5 8.25-7.5 7.5-7.5-7.5"
             />
-          </div>
-        </div>
+          </svg>
+        </button>
+      </div>
 
-        {/* Confirm Button */}
+      {/* Amount Input */}
+      <div className="w-full px-2 mb-8">
+        <label className="block text-sm font-medium mb-2 text-[#F7F0D9]">
+          Amount
+        </label>
+        <div className="w-full bg-[#2C2C2B] rounded-xl p-4 flex items-center gap-3 focus-within:border focus-within:border-[#FFBB03]">
+          <div className="w-6 h-6 flex items-center justify-center text-[#FFBB03]">
+            <span className="text-[#FFBB03] font-bold">₦</span>
+          </div>
+          <input
+            type="number"
+            value={amount}
+            onChange={(e) => setAmount(e.target.value)}
+            className="w-full bg-transparent text-lg font-semibold text-[#F7F0D9] outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+            placeholder="0.00"
+            inputMode="decimal"
+          />
+          {/* Max button */}
+          <button className="text-[#FFBB03] font-semibold text-sm">
+            Max
+          </button>{" "}
+        </div>
+        <p className="text-xs text-[#777] mt-1">
+          Available: {tokenSymbol} 50,000.00
+        </p>
+      </div>
+
+      {/* Confirm Button */}
+      <div className="mt-2 px-2">
         <button
-          onClick={() => onShowQrCode(accountDetails)}
-          className="w-full py-4 rounded-lg text-lg font-semibold bg-[#FFBB03] hover:bg-[#FFBB03]/90 text-[#1E1E1E] flex items-center justify-center"
+          onClick={handleConfirmClick}
+          disabled={!contactAddress || !amount}
+          className="w-full py-4 rounded-xl text-xl font-semibold bg-[#FFBB03] hover:bg-[#FFBB03]/90 text-[#1E1E1E] flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed"
         >
           Confirm
         </button>
       </div>
+      <TransactionPasscodeModal
+        isOpen={showPasscodeModal}
+        onClose={() => setShowPasscodeModal(false)}
+        onConfirm={handleVerifyPasscode}
+        transactionAmount={amount || "0"}
+        transactionCurrency={token || "USDC"}
+      />
     </div>
   );
 }
