@@ -27,12 +27,6 @@ export default function SendCryptoStep({ onConfirm }: SendCryptoStepProps) {
       alert("Please fill all fields.");
       return;
     }
-    onConfirm({
-      contactAddress,
-      token,
-      amount,
-      tokenSymbol,
-    });
     setShowPasscodeModal(true);
   };
 
@@ -47,6 +41,12 @@ export default function SendCryptoStep({ onConfirm }: SendCryptoStepProps) {
       // Assume API call is successful
       console.log("Transaction successful with passcode:", passcode);
       setIsLoading(false);
+      onConfirm({
+        contactAddress,
+        token,
+        amount,
+        tokenSymbol,
+      });
 
       // *** Call the new prop to s
     }, 1500); // Simulate API delay
