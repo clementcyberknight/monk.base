@@ -5,6 +5,8 @@ import MobileCheck from "@/app/MobileCheck";
 import Image from "next/image";
 import SendFiatStep from "./components/SendFiat";
 import SendCryptoStep from "./components/SendCrypto";
+import TransactionSuccess from "@/app/account/send-asset/components/TransactionSuccessfull";
+import { useRouter } from "next/navigation";
 
 type CurrencyType = "fiat" | "crypto";
 
@@ -24,12 +26,15 @@ interface CryptoCurrency {
 
 type SelectedCurrency = FiatCurrency | CryptoCurrency | null;
 
-type SendAssetView = "list" | "sendFiat" | "sendCrypto";
+type SendAssetView = "list" | "sendFiat" | "sendCrypto" | "success";
 
 export default function SendAssetPage() {
   const [currentView, setCurrentView] = useState<SendAssetView>("list");
   const [selectedCurrency, setSelectedCurrency] =
     useState<SelectedCurrency>(null);
+  const [lastTransactionDetails, setLastTransactionDetails] =
+    useState<any>(null);
+  const router = useRouter();
 
   const fiats: FiatCurrency[] = [
     {
@@ -75,6 +80,8 @@ export default function SendAssetPage() {
     bankName?: string; // Optional fields from verification
   }) => {
     console.log("Confirming Fiat Send:", details);
+    setLastTransactionDetails(details);
+    setCurrentView("success");
     // TODO: Implement API call to initiate fiat transfer
     // Show confirmation screen or PIN entry screen
   };
@@ -85,6 +92,8 @@ export default function SendAssetPage() {
     amount: string;
   }) => {
     console.log("Confirming Crypto Send:", details);
+    setLastTransactionDetails(details);
+    setCurrentView("success");
     // TODO: Implement API call to initiate crypto transaction
     // Show confirmation screen or PIN entry screen
   };
@@ -93,6 +102,24 @@ export default function SendAssetPage() {
   const handleBeneficiariesClick = () => {
     console.log("Viewing saved beneficiaries.");
     // TODO: Implement navigation or modal for beneficiaries
+  };
+  const handleDownloadReceipt = () => {
+    console.log("Downloading receipt for:", lastTransactionDetails);
+  };
+
+  const handleSaveAccount = () => {
+    console.log("Saving account for:", lastTransactionDetails);
+    // Determine if it's fiat or crypto based on lastTransactionDetails structure
+    // Example check:
+    if (lastTransactionDetails?.accountNumber) {
+      console.log("Saving Fiat beneficiary...");
+    } else if (lastTransactionDetails?.recipientAddress) {
+      console.log("Saving Crypto beneficiary...");
+    }
+  };
+
+  const handleComplete = () => {
+    console.log("Completing transaction flow.");
   };
 
   return (
@@ -220,7 +247,6 @@ export default function SendAssetPage() {
                 onConfirm={handleSendFiatConfirm}
               />
             )}
-          {/* Render SendCryptoStep directly without extra divs/headers */}
           {currentView === "sendCrypto" &&
             selectedCurrency &&
             selectedCurrency.type === "crypto" && (
@@ -231,6 +257,17 @@ export default function SendAssetPage() {
                 onConfirm={handleSendCryptoConfirm}
               />
             )}
+          {currentView === "success" && (
+            <TransactionSuccess
+              onComplete={handleComplete}
+              onDownloadReceipt={handleDownloadReceipt}
+              onSaveAccount={handleSaveAccount}
+              hideSaveAccount={
+                !lastTransactionDetails?.accountNumber &&
+                !lastTransactionDetails?.recipientAddress
+              }
+            />
+          )}
         </div>
       </main>
     </MobileCheck>

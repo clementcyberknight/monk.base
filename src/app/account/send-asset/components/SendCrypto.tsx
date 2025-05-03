@@ -11,6 +11,7 @@ interface SendCryptoStepProps {
     amount: string;
     tokenSymbol?: string;
   }) => void;
+  onTransactionComplete: () => void;
 }
 
 export default function SendCryptoStep({ onConfirm }: SendCryptoStepProps) {
@@ -37,22 +38,20 @@ export default function SendCryptoStep({ onConfirm }: SendCryptoStepProps) {
   };
 
   const handleVerifyPasscode = (passcode: string) => {
-    // Show loading indicator
+    // Show loading indicator while verifying/processing
     setIsLoading(true);
     setShowPasscodeModal(false);
 
-    // Simulate API call to verify passcode and process transaction
+    // --- Simulate API call to verify passcode AND process transaction ---
+    console.log("Verifying passcode and processing transaction...");
     setTimeout(() => {
+      // Assume API call is successful
+      console.log("Transaction successful with passcode:", passcode);
       setIsLoading(false);
-      setIsSuccess(true);
 
-      // Reset success message after a few seconds
-      setTimeout(() => {
-        setIsSuccess(false);
-      }, 3000);
-
-      console.log("Transaction completed with passcode:", passcode);
-    }, 1500);
+      // *** Call the new prop to s
+    }, 1500); // Simulate API delay
+    // --- Handle API Errors: In a real app, catch errors here, set isLoading false, show error message, potentially re-open modal or show error inline ---
   };
 
   return (

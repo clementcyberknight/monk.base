@@ -87,12 +87,12 @@ const TransactionPasscodeModal: React.FC<TransactionPasscodeModalProps> = ({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 bg-black bg-opacity-50 flex justify-center items-end">
-      <div className="bg-[#1E1E1E] rounded-t-2xl p-6 w-full max-w-md">
-        <h2 className="text-2xl font-bold text-[#F7F0D9] mb-4">
+    <div className="fixed inset-0 z-50 bg-transparent bg-opacity-50 flex justify-center items-end">
+      <div className="bg-[#F7F0D9] rounded-t-4xl p-6 w-full max-w-md">
+        <h2 className="text-2xl text-center font-bold text-[#1E1E1E] mb-4">
           Enter Passcode
         </h2>
-        <p className="text-sm text-[#777] mb-6">
+        <p className="text-sm text-[#1E1E1E] mb-6">
           Enter your 4-digit passcode to confirm the transaction
         </p>
 
@@ -110,7 +110,7 @@ const TransactionPasscodeModal: React.FC<TransactionPasscodeModalProps> = ({
                 onChange={(e) => handleOtpInputChange(index, e.target.value)}
                 onFocus={() => setActiveOtpIndex(index)}
                 onKeyDown={(e) => handleOtpKeyDown(index, e)}
-                className="w-16 h-16 text-center text-2xl font-semibold rounded-3xl bg-transparent text-[#F7F0D9] caret-transparent border-4"
+                className="w-16 h-16 text-center text-2xl font-semibold rounded-3xl bg-transparent text-[#1E1E1E] caret-transparent border-4"
                 style={{
                   borderColor: activeOtpIndex === index ? "#FFBB03" : "#ABA48D",
                   outline: "none",
@@ -134,10 +134,10 @@ const TransactionPasscodeModal: React.FC<TransactionPasscodeModalProps> = ({
                 disabled={key === "."}
                 className={`flex items-center justify-center w-full h-16 rounded-full active:bg-gray-300 ${
                   key === "."
-                    ? "text-gray-600 opacity-50 cursor-not-allowed"
+                    ? "text-[#1E1E1E] opacity-50 cursor-not-allowed"
                     : key === "<"
-                    ? "text-gray-600"
-                    : "text-[#F7F0D9]"
+                    ? "text-[#1E1E1E]"
+                    : "text-[#1E1E1E]"
                 }`}
               >
                 {key === "<" ? (
