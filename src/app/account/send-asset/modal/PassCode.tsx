@@ -108,7 +108,10 @@ const TransactionPasscodeModal: React.FC<TransactionPasscodeModalProps> = ({
                 maxLength={1}
                 value={digit !== "" && index !== activeOtpIndex ? "•" : digit}
                 onChange={(e) => handleOtpInputChange(index, e.target.value)}
-                onFocus={() => setActiveOtpIndex(index)}
+                onFocus={(e) => {
+                  setActiveOtpIndex(index);
+                  e.preventDefault();
+                }}
                 onKeyDown={(e) => handleOtpKeyDown(index, e)}
                 className="w-16 h-16 text-center text-2xl font-semibold rounded-3xl bg-transparent text-[#1E1E1E] caret-transparent border-4"
                 style={{
@@ -117,8 +120,9 @@ const TransactionPasscodeModal: React.FC<TransactionPasscodeModalProps> = ({
                   boxShadow:
                     activeOtpIndex === index ? "0 0 0 2px #FFBB03" : "none",
                 }}
-                inputMode="numeric"
-                readOnly={index !== activeOtpIndex && digit !== ""}
+                inputMode="none"
+                readOnly
+                tabIndex={-1}
               />
             ))}
           </div>

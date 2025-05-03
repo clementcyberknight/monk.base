@@ -5,6 +5,9 @@ import React, { useState } from "react";
 import TransactionPasscodeModal from "@/app/account/send-asset/modal/PassCode";
 
 interface SendCryptoStepProps {
+  chainName: string;
+  chainSymbol: string;
+  chainIcon: string;
   onConfirm: (details: {
     contactAddress: string;
     token: string;

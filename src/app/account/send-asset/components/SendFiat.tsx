@@ -3,6 +3,7 @@
 import Image from "next/image";
 import React, { useState, useEffect } from "react";
 import TransactionPasscodeModal from "@/app/account/send-asset/modal/PassCode";
+import SaveRecipient from "@/app/account/send-asset/modal/SaveRecipient";
 
 interface SendFiatStepProps {
   currencyName: string;
@@ -32,18 +33,26 @@ export default function SendFiatStep({
   ); // State for fetched name
   const [selectedBankName, setSelectedBankName] =
     useState<string>("Zenith Bank");
+  const [showSavedRecipients, setShowSavedRecipients] = useState(false);
+
+  const savedAccounts = [
+    { name: "Ojukwu Emanuel", icon: "/icons/zenithbank.svg", accountNumber: "7586947586" },
+    { name: "Peter Nwobi", icon: "/icons/gtbank.svg", accountNumber: "7694758693" },
+    { name: "Papa J", icon: "/icons/palmpay.svg", accountNumber: "6879849674" }
+  ];
+
+  const matchingAccounts = accountNumber 
+    ? savedAccounts.filter(account => account.accountNumber.startsWith(accountNumber))
+    : [];
 
   const [isLoading, setIsLoading] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
 
   useEffect(() => {
     if (accountNumber.length === 10 && bankCode) {
-      // Example length check
       console.log("Fetching account name for", accountNumber, bankCode);
-      // Simulate API call
       const timeoutId = setTimeout(() => {
-        // Replace with actual API result
-        setFetchedAccountName("Adebayo Adewale"); // Dummy fetched name
+        setFetchedAccountName("Adebayo Adewale");
       }, 1000); // Simulate network delay
       return () => clearTimeout(timeoutId); // Cleanup timeout on unmount or change
     } else {
@@ -56,38 +65,33 @@ export default function SendFiatStep({
       alert("Please fill all fields and verify account name.");
       return;
     }
-    onConfirm({
-      accountNumber,
-      bankCode,
-      amount,
-      accountName: fetchedAccountName,
-      bankName: selectedBankName,
-    });
     setShowPasscodeModal(true);
   };
 
   const handleVerifyPasscode = (passcode: string) => {
-    // Show loading indicator
     setIsLoading(true);
-    setShowPasscodeModal(false);
-
-    // Simulate API call to verify passcode and process transaction
     setTimeout(() => {
+      onConfirm({
+        accountNumber,
+        bankCode,
+        amount,
+        accountName: fetchedAccountName ?? "",
+        bankName: selectedBankName,
+      });
+      
       setIsLoading(false);
       setIsSuccess(true);
 
-      // Reset success message after a few seconds
       setTimeout(() => {
         setIsSuccess(false);
       }, 3000);
 
       console.log("Transaction completed with passcode:", passcode);
-    }, 1500);
+    }, 3000); // 3 seconds delay
   };
 
   return (
     <div className="flex flex-col w-full max-w-md flex-grow text-[#F7F0D9]">
-      {/* Account Number Section - Updated to match design */}
       <div className="w-full px-2 mb-6">
         <label className="block text-sm mt-8 font-medium mb-2 text-[#F7F0D9]">
           Account Number
@@ -111,7 +115,10 @@ export default function SendFiatStep({
               inputMode="numeric"
             />
           </div>
-          <button className="w-14 h-14 flex items-center justify-center rounded-xl bg-[#FFBB03] shrink-0">
+          <button 
+            onClick={() => setShowSavedRecipients(true)}
+            className="w-14 h-14 flex items-center justify-center rounded-xl bg-[#FFBB03] shrink-0"
+          >
             <Image
               src="/icons/blackUserCircle.svg"
               alt="Account icon"
@@ -120,6 +127,32 @@ export default function SendFiatStep({
             />
           </button>
         </div>
+        {accountNumber && matchingAccounts.length > 0 && (
+          <div className="mt-2 flex gap-2 overflow-x-auto py-2 px-1">
+            {matchingAccounts.map((account, index) => (
+              <button
+                key={index}
+                onClick={() => {
+                  setAccountNumber(account.accountNumber);
+                  setSelectedBankName(account.name.includes("Zenith") ? "Zenith Bank" : 
+                                   account.name.includes("GT") ? "GT Bank" : "Palm Pay");
+                }}
+                className="flex items-center gap-2 px-3 py-2 bg-[#2C2C2E] rounded-xl hover:bg-[#3A3A3C] transition-colors flex-shrink-0"
+              >
+                <div className="w-8 h-8 rounded-xl overflow-hidden flex-shrink-0">
+                  <Image
+                    src={account.icon}
+                    alt={account.name}
+                    width={32}
+                    height={32}
+                    className="object-cover"
+                  />
+                </div>
+                <span className="text-[#F7F0D9] whitespace-nowrap">{account.name.split(" ")[0]}</span>
+              </button>
+            ))}
+          </div>
+        )}
       </div>
 
       {/* Bank Selection */}
@@ -234,6 +267,16 @@ export default function SendFiatStep({
         transactionAmount={amount || "0"}
         transactionCurrency={currencyName}
       />
+      {showSavedRecipients && (
+        <SaveRecipient
+          savedAccounts={savedAccounts}
+          onSelect={(account) => {
+            setAccountNumber(account.accountNumber);
+            setShowSavedRecipients(false);
+          }}
+          onClose={() => setShowSavedRecipients(false)}
+        />
+      )}
     </div>
   );
 }

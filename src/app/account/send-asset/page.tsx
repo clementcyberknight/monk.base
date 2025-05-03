@@ -7,6 +7,7 @@ import SendFiatStep from "./components/SendFiat";
 import SendCryptoStep from "./components/SendCrypto";
 import TransactionSuccess from "@/app/account/send-asset/components/TransactionSuccessfull";
 import { useRouter } from "next/navigation";
+import TransactionFailed from "@/app/account/send-asset/components/TransactionFailed";
 
 type CurrencyType = "fiat" | "crypto";
 
@@ -26,7 +27,7 @@ interface CryptoCurrency {
 
 type SelectedCurrency = FiatCurrency | CryptoCurrency | null;
 
-type SendAssetView = "list" | "sendFiat" | "sendCrypto" | "success";
+type SendAssetView = "list" | "sendFiat" | "sendCrypto" | "success" | "failed";
 
 export default function SendAssetPage() {
   const [currentView, setCurrentView] = useState<SendAssetView>("list");
@@ -81,19 +82,20 @@ export default function SendAssetPage() {
   }) => {
     console.log("Confirming Fiat Send:", details);
     setLastTransactionDetails(details);
-    setCurrentView("success");
+    setCurrentView(Math.random() < 0.5 ? "failed" : "success");
     // TODO: Implement API call to initiate fiat transfer
     // Show confirmation screen or PIN entry screen
   };
 
   const handleSendCryptoConfirm = (details: {
-    recipientAddress: string;
-    tokenSymbol: string;
+    contactAddress: string;
+    token: string;
     amount: string;
+    tokenSymbol?: string;
   }) => {
     console.log("Confirming Crypto Send:", details);
     setLastTransactionDetails(details);
-    setCurrentView("success");
+    setCurrentView(Math.random() < 0.5 ? "failed" : "success");
     // TODO: Implement API call to initiate crypto transaction
     // Show confirmation screen or PIN entry screen
   };
@@ -119,7 +121,7 @@ export default function SendAssetPage() {
   };
 
   const handleComplete = () => {
-    console.log("Completing transaction flow.");
+    router.push("/account/dashboard");
   };
 
   return (
@@ -255,10 +257,22 @@ export default function SendAssetPage() {
                 chainSymbol={selectedCurrency.symbol}
                 chainIcon={selectedCurrency.icon}
                 onConfirm={handleSendCryptoConfirm}
+                onTransactionComplete={handleComplete}
               />
             )}
           {currentView === "success" && (
             <TransactionSuccess
+              onComplete={handleComplete}
+              onDownloadReceipt={handleDownloadReceipt}
+              onSaveAccount={handleSaveAccount}
+              hideSaveAccount={
+                !lastTransactionDetails?.accountNumber &&
+                !lastTransactionDetails?.recipientAddress
+              }
+            />
+          )}
+          {currentView === "failed" && (
+            <TransactionFailed
               onComplete={handleComplete}
               onDownloadReceipt={handleDownloadReceipt}
               onSaveAccount={handleSaveAccount}
