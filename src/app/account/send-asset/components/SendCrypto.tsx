@@ -3,6 +3,7 @@
 import Image from "next/image";
 import React, { useState } from "react";
 import TransactionPasscodeModal from "@/app/account/send-asset/modal/PassCode";
+import SaveRecipient from "@/app/account/send-asset/modal/SaveRecipient";
 
 interface SendCryptoStepProps {
   chainName: string;
@@ -24,6 +25,17 @@ export default function SendCryptoStep({ onConfirm }: SendCryptoStepProps) {
   const [amount, setAmount] = useState("");
   const [tokenSymbol, setTokenSymbol] = useState("$");
   const [isLoading, setIsLoading] = useState(false);
+  const [showSavedRecipients, setShowSavedRecipients] = useState(false);
+
+  const savedAccounts = [
+    { name: "Ojukwu Emanuel", icon: "/icons/usdc.svg", accountNumber: "0x742d35Cc6634C0532925a3b844Bc454e4438f44e" },
+    { name: "Paul Nwobi", icon: "/icons/usdc.svg", accountNumber: "0x742d35Cc6634C0532925a3b844Bc454e4438f44f" },
+    { name: "Taiwo Ade", icon: "/icons/usdc.svg", accountNumber: "0x742d35Cc6634C0532925a3b844Bc454e4438f44g" }
+  ];
+
+  const matchingAccounts = contactAddress 
+    ? savedAccounts.filter(account => account.accountNumber.toLowerCase().startsWith(contactAddress.toLowerCase()))
+    : [];
 
   const handleConfirmClick = () => {
     if (!contactAddress || !token || !amount) {
@@ -34,14 +46,11 @@ export default function SendCryptoStep({ onConfirm }: SendCryptoStepProps) {
   };
 
   const handleVerifyPasscode = (passcode: string) => {
-    // Show loading indicator while verifying/processing
     setIsLoading(true);
     setShowPasscodeModal(false);
 
-    // --- Simulate API call to verify passcode AND process transaction ---
     console.log("Verifying passcode and processing transaction...");
     setTimeout(() => {
-      // Assume API call is successful
       console.log("Transaction successful with passcode:", passcode);
       setIsLoading(false);
       onConfirm({
@@ -50,10 +59,7 @@ export default function SendCryptoStep({ onConfirm }: SendCryptoStepProps) {
         amount,
         tokenSymbol,
       });
-
-      // *** Call the new prop to s
-    }, 1500); // Simulate API delay
-    // --- Handle API Errors: In a real app, catch errors here, set isLoading false, show error message, potentially re-open modal or show error inline ---
+    }, 1500);
   };
 
   return (
@@ -70,10 +76,13 @@ export default function SendCryptoStep({ onConfirm }: SendCryptoStepProps) {
               value={contactAddress}
               onChange={(e) => setContactAddress(e.target.value)}
               className="bg-transparent tracking-wide text-lg font-semibold text-[#F7F0D9] outline-none w-full"
-              placeholder="7hdgyG64dFGO.....12d"
+              placeholder="0x742d...44e"
             />
           </div>
-          <button className="w-14 h-14 flex items-center justify-center rounded-xl bg-[#FFBB03] shrink-0">
+          <button 
+            onClick={() => setShowSavedRecipients(true)}
+            className="w-14 h-14 flex items-center justify-center rounded-xl bg-[#FFBB03] shrink-0"
+          >
             <Image
               src="/icons/blackUserCircle.svg"
               alt="Account icon"
@@ -82,6 +91,30 @@ export default function SendCryptoStep({ onConfirm }: SendCryptoStepProps) {
             />
           </button>
         </div>
+        {contactAddress && matchingAccounts.length > 0 && (
+          <div className="mt-2 flex gap-2 overflow-x-auto py-2 px-1">
+            {matchingAccounts.map((account, index) => (
+              <button
+                key={index}
+                onClick={() => {
+                  setContactAddress(account.accountNumber);
+                }}
+                className="flex items-center gap-2 px-3 py-2 bg-[#2C2C2B] rounded-xl hover:bg-[#3A3A3C] transition-colors flex-shrink-0"
+              >
+                <div className="w-8 h-8 rounded-xl overflow-hidden flex-shrink-0">
+                  <Image
+                    src={account.icon}
+                    alt={account.name}
+                    width={32}
+                    height={32}
+                    className="object-cover"
+                  />
+                </div>
+                <span className="text-[#F7F0D9] whitespace-nowrap">{account.name.split(" ")[0]}</span>
+              </button>
+            ))}
+          </div>
+        )}
       </div>
 
       {/* Token Selection */}
@@ -165,6 +198,16 @@ export default function SendCryptoStep({ onConfirm }: SendCryptoStepProps) {
         transactionAmount={amount || "0"}
         transactionCurrency={token || "USDC"}
       />
+      {showSavedRecipients && (
+        <SaveRecipient
+          savedAccounts={savedAccounts}
+          onSelect={(account) => {
+            setContactAddress(account.accountNumber);
+            setShowSavedRecipients(false);
+          }}
+          onClose={() => setShowSavedRecipients(false)}
+        />
+      )}
     </div>
   );
 }
