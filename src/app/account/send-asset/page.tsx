@@ -264,22 +264,12 @@ export default function SendAssetPage() {
             <TransactionSuccess
               onComplete={handleComplete}
               onDownloadReceipt={handleDownloadReceipt}
-              onSaveAccount={handleSaveAccount}
-              hideSaveAccount={
-                !lastTransactionDetails?.accountNumber &&
-                !lastTransactionDetails?.recipientAddress
-              }
             />
           )}
           {currentView === "failed" && (
             <TransactionFailed
               onComplete={handleComplete}
               onDownloadReceipt={handleDownloadReceipt}
-              onSaveAccount={handleSaveAccount}
-              hideSaveAccount={
-                !lastTransactionDetails?.accountNumber &&
-                !lastTransactionDetails?.recipientAddress
-              }
             />
           )}
         </div>

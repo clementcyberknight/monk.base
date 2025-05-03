@@ -6,17 +6,13 @@ import React from "react";
 interface TransactionSuccessProps {
   onComplete: () => void;
   onDownloadReceipt: () => void;
-  onSaveAccount: () => void;
   message?: string;
-  hideSaveAccount?: boolean;
 }
 
 export default function TransactionFailed({
   onComplete,
   onDownloadReceipt,
-  onSaveAccount,
   message = "We’ve encountered some issues check your(or recipients bank’s) network  and try again later. ",
-  hideSaveAccount = false,
 }: TransactionSuccessProps) {
   return (
     <div className="flex flex-col items-center justify-between flex-grow w-full max-w-md text-[#F7F0D9] py-8 text-center">
