@@ -21,7 +21,6 @@ export default function SendCryptoStep({ onConfirm }: SendCryptoStepProps) {
   const [amount, setAmount] = useState("");
   const [tokenSymbol, setTokenSymbol] = useState("$");
   const [isLoading, setIsLoading] = useState(false);
-  const [isSuccess, setIsSuccess] = useState(false);
 
   const handleConfirmClick = () => {
     if (!contactAddress || !token || !amount) {
